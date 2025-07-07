@@ -2,3 +2,4 @@
 .DS_Store
 utils/__pycache__/__init__.cpython-39.pyc
 utils/__pycache__/polynomials.cpython-39.pyc
+.venv 
