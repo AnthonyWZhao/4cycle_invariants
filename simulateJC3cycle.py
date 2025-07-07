@@ -12,7 +12,7 @@ msa_length = 1000
 model = "JC"
 #outputFilename = ""
 
-edges = ["a", "b", "c", "d", "e", "f", "g"]
+edges = ["a", "b", "c", "d", "e", "f", "g", "h"]
 nucleotides = ["A", "C", "G", "T"]
 substitutionRates = dict()
 generateEdgeRates = True
@@ -80,13 +80,14 @@ if generateGamma:
 	gamma = random.random()
 if generateEdgeRates:
 	if rate == "mixed":
-		substitutionRates["a"] = random.uniform()
-		substitutionRates["b"] = random.uniform()
-		substitutionRates["c"] = random.uniform()
-		substitutionRates["d"] = random.uniform()
-		substitutionRates["e"] = random.uniform()
-		substitutionRates["f"] = random.uniform()
-		substitutionRates["g"] = random.uniform() 
+		substitutionRates["a"] = random.uniform(0,0.001)
+		substitutionRates["b"] = random.uniform(0.001,0.01)
+		substitutionRates["c"] = random.uniform(0.01, 0.1)
+		substitutionRates["d"] = random.uniform(0,0.001)
+		substitutionRates["e"] = random.uniform(0,0.001)
+		substitutionRates["f"] = random.uniform(0.001,0.01)
+		substitutionRates["g"] = random.uniform(0.001,0.01)
+		substitutionRates["h"] = random.uniform(0.01, 0.1) 
 	else:
 		for edge in edges:
 			if rate == "very_low":
@@ -134,7 +135,7 @@ for i in range(msa_length):
     rv_root = nucleotides[random.randrange(4)]
     
     rv_4 = mutate_JC(rv_root, substitutionRates["h"])
-    rv_5 = mutate_JC(rv_4, substitutionRates["g"])
+    rv_5 = mutate_JC(rv_4, substitutionRates["g"]) 
     
     rv_6 = 0 #reticulation vertex
     
