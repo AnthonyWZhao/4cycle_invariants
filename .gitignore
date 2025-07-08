@@ -3,3 +3,5 @@
 utils/__pycache__/__init__.cpython-39.pyc
 utils/__pycache__/polynomials.cpython-39.pyc
 .venv 
+3cycle_alignments
+3cycle_evaluate_scores
