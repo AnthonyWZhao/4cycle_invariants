@@ -53,8 +53,7 @@ for i in range(start, end):
             temp_line[0] = temp_line[0].replace('Taxon', '') 
             combinedDataDict[temp_line[0]].append(temp_line[1])
 
-#remove largest
-
+#remove largest 
 combinedDataDict.pop('(1,2,0,3)', None)
 combinedDataDict.pop('(2,0,3,1)', None)
 combinedDataDict.pop('(0,2,1,3)', None)

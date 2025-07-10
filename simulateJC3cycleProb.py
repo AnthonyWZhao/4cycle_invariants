@@ -4,6 +4,9 @@ import itertools
 import random
 import skbio
 from skbio import TabularMSA, DNA
+from collections import defaultdict
+from itertools import product
+import mpmath
 
 start = time.time()
 
@@ -129,6 +132,7 @@ def mutate_JC(start_nucl, edge_param):
 		nucl.remove(start_nucl)
 		return nucl[random.randrange(3)]
 
+columnFreqDict = defaultdict(int)
 
 for i in range(msa_length):
     #start with uniform distribution at the root
@@ -143,29 +147,30 @@ for i in range(msa_length):
         rv_6 = mutate_JC(rv_4, substitutionRates["f"])
     else:
         rv_6 = mutate_JC(rv_5, substitutionRates["e"])
-        
-    sequence_0 += mutate_JC(rv_6, substitutionRates["a"])
-    sequence_1 += mutate_JC(rv_5, substitutionRates["b"])
-    sequence_2 += mutate_JC(rv_root, substitutionRates["c"])
-    sequence_3 += mutate_JC(rv_root, substitutionRates["d"])
     
-seqs = [DNA(sequence_0, metadata={"id":"Taxon" + str(networkPermutation[0])}), 
-		DNA(sequence_1, metadata={"id":"Taxon" + str(networkPermutation[1])}), 
-		DNA(sequence_2, metadata={"id":"Taxon" + str(networkPermutation[2])}), 
-		DNA(sequence_3, metadata={"id":"Taxon" + str(networkPermutation[3])})]
+    
+    column = [mutate_JC(rv_6, substitutionRates["a"])
+              , mutate_JC(rv_5, substitutionRates["b"])
+              , mutate_JC(rv_root, substitutionRates["c"])
+              , mutate_JC(rv_root, substitutionRates["d"])]
+    
+    column = [column[inversePermutation[0]]
+              , column[inversePermutation[1]]
+              , column[inversePermutation[2]]
+              , column[inversePermutation[3]]]
+    
+    columnFreqDict[ ''.join(column)] += 1
+ 
 
-permutedSeqs = [seqs[inversePermutation[0]],seqs[inversePermutation[1]], seqs[inversePermutation[2]], seqs[inversePermutation[3]]]
-aln = TabularMSA(permutedSeqs, minter="id")
+leafPatternProbs = defaultdict(np.longdouble)
+
+leafPatternCombs = [''.join(comb) for comb in product(['A', 'G', 'T', 'C'], repeat=len(['A', 'G', 'T', 'C']))]
 
 f = open(outputFilename, "w")
-aln.write(f, format='phylip')
-f.close()
+for leafPattern in leafPatternCombs:
+    leafPatternProbs[leafPattern] = mpmath.fdiv(columnFreqDict[leafPattern], msa_length) 
+    f.write(leafPattern + "\t" + str(leafPatternProbs[leafPattern]) + "\n")
+f.close()   
 
 end = time.time()
 print("simulate.py time: " + str(end - start))
-        
-    
-    
-    
-    
-     
