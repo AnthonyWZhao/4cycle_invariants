@@ -46,7 +46,7 @@ if len(inputFilename) == 0:
 
 plt.figure(figsize=(10, 20)) 
 
-left = 10
+left = 1
  
 for j in range(1, 11):
     start, end = 1, 101
@@ -100,7 +100,7 @@ for j in range(1, 11):
                 need += curr              
         pc.append(float(mpmath.fdiv(need,total)) )
                   
-    with open(f"result_data/text_data/1mbp_{left}.txt", "w+") as a:
+    with open(f"result_data/text_data/1mbp_{left}.txt", "a+") as a: 
         a.write(f"1mbp_{left}_{j}:" + "\t" 
                 + f"Pc Mean: {statistics.mean(pc)}" 
                 + "\t" + f"Pc Variance: {statistics.variance(pc)}" + "\n")
