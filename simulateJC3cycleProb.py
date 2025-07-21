@@ -153,7 +153,7 @@ for i in range(msa_length):
               , mutate_JC(rv_5, substitutionRates["b"])
               , mutate_JC(rv_root, substitutionRates["c"])
               , mutate_JC(rv_root, substitutionRates["d"])]
-    
+     
     column = [column[inversePermutation[0]]
               , column[inversePermutation[1]]
               , column[inversePermutation[2]]

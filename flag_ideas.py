@@ -18,7 +18,7 @@ combinedDataDict = defaultdict(list)
 
 smallest = ['(1,2,4,3)','(1,2,3,4)','(2,1,4,3)','(2,1,3,4)']
  
-for i in range(1001, 1100):   
+for i in range(2001, 2100):   
     with open("placeholder/1mbp_2_sim_score/trial_score_" + str(i) + ".txt") as f:
         for line in f:
             temp_line = line.split()[1::]
@@ -52,7 +52,7 @@ for j in range(len(combinedDataDict['(1,2,4,3)'])):
     #print(mpmath. )            
     pc.append(mpmath.nstr(mpmath.fdiv(need,total)))
     
-#print(pc)            
+print(pc)            
 
 
 means = [(statistics.mean(combinedDataDict[k]), k) for k in combinedDataDict.keys()]
@@ -65,7 +65,8 @@ for m in sorted_means:
 
 signal = np.array(signal)
 model = "l1"
-algo = rpt.Binseg(model=model).fit(signal)
+algo=rpt.Window(width=40, model=model).fit(signal)
+#algo = rpt.Binseg(model=model).fit(signal)
 #my_bkps = algo.predict(pen=np.log( len(signal)))
 my_bkps = algo.predict(2)
 rpt.show.display(signal, my_bkps, figsize=(10,6))

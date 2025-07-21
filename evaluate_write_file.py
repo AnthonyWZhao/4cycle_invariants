@@ -201,6 +201,7 @@ if len(MSAFilename) > 0:
 		if "-" not in col:
 			originalFrequencies[Nucl[str(col[0])], Nucl[str(col[1])], Nucl[str(col[2])], Nucl[str(col[3])]] += 1
 			count += 1
+ 
 
 	for i in range(4):
 		for j in range(4):
@@ -210,6 +211,7 @@ if len(MSAFilename) > 0:
 					if freq != 0:
 						originalFrequencies[i,j,k,l] = mpmath.fdiv(freq, count)
 
+	 
 	originalTransformed = np.zeros(shape=(4,4,4,4), dtype=np.longdouble)
 	for i in range(4):
 		for j in range(4):
@@ -224,6 +226,7 @@ if len(MSAFilename) > 0:
 										transformed_value = mpmath.fadd(transformed_value, mpmath.fprod([Chi(i,w), Chi(j,x), Chi(k,y), Chi(l,z), originalFrequencies[w,x,y,z]]))
 					originalTransformed[i,j,k,l] = mpmath.fdiv(transformed_value, mpmath.power(4,4))
 
+	
 	if model == "JC":
 		# Average over JC classes
 		val = mpmath.fdiv(originalTransformed[0,0,1,1] + originalTransformed[0,0,2,2] + originalTransformed[0,0,3,3], 3)

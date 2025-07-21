@@ -196,7 +196,7 @@ if len(ProbFilename) > 0:
                        , Nucl[temp_line[0][1]]
                        , Nucl[temp_line[0][2]]
                        , Nucl[temp_line[0][3]]] = np.longdouble(temp_line[1]) 
-	
+ 
 	originalTransformed = np.zeros(shape=(4,4,4,4), dtype=np.longdouble)
 	for i in range(4):
 		for j in range(4):
@@ -210,7 +210,7 @@ if len(ProbFilename) > 0:
 									if originalFrequencies[w,x,y,z] > 0:
 										transformed_value = mpmath.fadd(transformed_value, mpmath.fprod([Chi(i,w), Chi(j,x), Chi(k,y), Chi(l,z), originalFrequencies[w,x,y,z]]))
 					originalTransformed[i,j,k,l] = mpmath.fdiv(transformed_value, mpmath.power(4,4))
-
+ 
 	if model == "JC":
 		# Average over JC classes
 		val = mpmath.fdiv(originalTransformed[0,0,1,1] + originalTransformed[0,0,2,2] + originalTransformed[0,0,3,3], 3)
@@ -549,7 +549,6 @@ for perm in permutations:
 	networkNorms[labelString] = score
 
 sortedScores = sorted(networkNorms.items(), key=operator.itemgetter(1))
- 
  
 f = open(outputFilename, "w")
 for i in range(0,12): 

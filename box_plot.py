@@ -9,7 +9,7 @@ import pandas as pd
 from collections import defaultdict
 import matplotlib.pyplot as plt
 
-try:
+""" try:
     opts, args = getopt.getopt(sys.argv[1:], "hi:o:s:e:")
 except getopt.GetoptError:
     print("Option not recognised") 
@@ -39,33 +39,40 @@ if len(inputFilename) == 0:
     sys.exit(2)
 #if len(outputFilename) == 0:
     #print("ERROR: You must provide an output file with -o")
-    #sys.exit(2)
+    #sys.exit(2) """
 
+plt.figure(figsize=(10, 20)) 
+
+left = 10
  
-combinedDataDict = defaultdict(list) 
+for j in range(1, 11):
+    start, end = 1, 101
+    combinedDataDict = defaultdict(list)
+    for i in range(start, end):   
+        with open(f"result_data/scores/1mbp_{left}_" + str(j) + "/score_" + str(left*1000 + (j-1)*100 + i) + ".txt") as f:
+            for line in f:
+                temp_line = line.split()[1::]
+                temp_line[1] = float(temp_line[1]) 
+                #remove 'Taxon'
+                temp_line[0] = temp_line[0].replace('Taxon', '') 
+                combinedDataDict[temp_line[0]].append(temp_line[1])
 
-for i in range(start, end):   
-    with open(inputFilename + "_" + str(i) + ".txt") as f:
-        for line in f:
-            temp_line = line.split()[1::]
-            temp_line[1] = float(temp_line[1]) 
-            #remove 'Taxon'
-            temp_line[0] = temp_line[0].replace('Taxon', '') 
-            combinedDataDict[temp_line[0]].append(temp_line[1])
+    #remove largest 
+    combinedDataDict.pop('(2,3,1,4)', None)
+    combinedDataDict.pop('(1,3,2,4)', None)
+    combinedDataDict.pop('(3,1,4,2)', None)
+    combinedDataDict.pop('(4,1,3,2)', None)
 
-#remove largest 
-combinedDataDict.pop('(1,2,0,3)', None)
-combinedDataDict.pop('(2,0,3,1)', None)
-combinedDataDict.pop('(0,2,1,3)', None)
-combinedDataDict.pop('(3,0,2,1)', None)
-
-fig, ax = plt.subplots()
-
-ax.boxplot(combinedDataDict.values(), vert=False)
-
-ax.set_yticklabels(combinedDataDict.keys())                
-
-plt.show() 
-                
-        
-        
+    ax = plt.subplot(5,2, j )
+    ax.boxplot(combinedDataDict.values(), vert=False)
+    ax.set_title(f"1mbp_{left}_" + str(j))
+    ax.set_yticklabels(combinedDataDict.keys()) 
+    
+plt.savefig(f"result_data/plots/box_plots/1mbp_{left}")
+plt.show()    
+ 
+    
+    
+                    
+            
+            
