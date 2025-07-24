@@ -44,7 +44,7 @@ if len(inputFilename) == 0:
     #print("ERROR: You must provide an output file with -o")
     #sys.exit(2) """
 
-plt.figure(figsize=(10, 20)) 
+                                                      
 
 left = 1
  
@@ -120,7 +120,7 @@ for j in range(1, 11):
     my_bkps = algo.predict(pen=np.log( len(signal)))
     #my_bkps = algo.predict(2) 
     rpt.show.display(signal, my_bkps, figsize=(10,6))  
-    labplt.savefig(f"result_data/plots/rupture_plots/1mbp_{left}/1mbp_{left}_{j}"  )  
+    labplt.savefig(f"result_data/plots/rupture_plots/1mbp_{left}/1mbp_{left}_{j}")  
     
     
                     

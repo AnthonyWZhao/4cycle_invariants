@@ -10,6 +10,9 @@ import mpmath
 
 start = time.time()
 
+edge_pairs = itertools.combinations(range(4),2) 
+
+ 
 
 msa_length = 1000000
 model = "JC"
@@ -132,7 +135,9 @@ def mutate_JC(start_nucl, edge_param):
 		nucl.remove(start_nucl)
 		return nucl[random.randrange(3)]
 
-columnFreqDict = defaultdict(int)
+columnFreqDicts = [[defaultdict(int)] for pair in edge_pairs]
+reversedPairFreqDicts = [[defaultdict(int)] for pair in edge_pairs]
+baseFreqDict = defaultdict(int)
 
 for i in range(msa_length):
     #start with uniform distribution at the root
@@ -158,6 +163,12 @@ for i in range(msa_length):
               , column[inversePermutation[1]]
               , column[inversePermutation[2]]
               , column[inversePermutation[3]]]
+    
+    baseFreqDict[ ''.join(column)] += 1
+    
+    for pair in edge_pairs:
+        columnFreqDicts
+        
     
     columnFreqDict[ ''.join(column)] += 1
  

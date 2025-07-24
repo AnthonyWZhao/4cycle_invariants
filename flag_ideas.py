@@ -15,18 +15,19 @@ import statistics
 
  
 combinedDataDict = defaultdict(list) 
-
-smallest = ['(1,2,4,3)','(1,2,3,4)','(2,1,4,3)','(2,1,3,4)']
+smallest = [] 
+smallest = ['(0,1,3,2)','(0,1,2,3)','(1,0,3,2)','(1,0,2,3)']
  
-for i in range(2001, 2100):   
-    with open("placeholder/1mbp_2_sim_score/trial_score_" + str(i) + ".txt") as f:
+for i in range(0,100):   
+    with open("placeholder/breakup_scores/test_breakup_score_" + str(i) + ".txt") as f:
         for line in f:
-            temp_line = line.split()[1::]
-            temp_line[1] = float(temp_line[1]) 
-            #remove 'Taxon'
-            temp_line[0] = temp_line[0].replace('Taxon', '') 
-            combinedDataDict[temp_line[0]].append(temp_line[1])
-            
+            if line[0:4] not in ["Tree", "eval"]:
+                temp_line = line.split()[1::]
+                temp_line[1] = float(temp_line[1]) 
+                #remove 'Taxon'
+                temp_line[0] = temp_line[0].replace('Taxon', '') 
+                combinedDataDict[temp_line[0]].append(temp_line[1])
+                
             
  
 #remove largest 
@@ -35,8 +36,9 @@ for i in range(2001, 2100):
 #combinedDataDict.pop('(3,1,4,2)', None)
 #combinedDataDict.pop('(4,1,3,2)', None) 
 
+ 
 pc = []  
-for j in range(len(combinedDataDict['(1,2,4,3)'])):
+for j in range(len(combinedDataDict['(1,2,3,4)'])):
     big = []
     small = []
     total = 0
@@ -51,7 +53,7 @@ for j in range(len(combinedDataDict['(1,2,4,3)'])):
             big.append(curr)
     #print(mpmath. )            
     pc.append(mpmath.nstr(mpmath.fdiv(need,total)))
-    
+ 
 print(pc)            
 
 
@@ -67,8 +69,8 @@ signal = np.array(signal)
 model = "l1"
 algo=rpt.Window(width=40, model=model).fit(signal)
 #algo = rpt.Binseg(model=model).fit(signal)
-#my_bkps = algo.predict(pen=np.log( len(signal)))
-my_bkps = algo.predict(2)
+my_bkps = algo.predict(pen=np.log( len(signal)))
+#my_bkps = algo.predict(2)
 rpt.show.display(signal, my_bkps, figsize=(10,6))
 print(my_bkps)
 plt.show()

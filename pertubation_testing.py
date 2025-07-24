@@ -90,7 +90,7 @@ def getFrequenciesFromPermutation(frequencyArray, permutation):
 					returnArray[permutedIndex] = frequencyArray[index]
 	return returnArray
 
-def evaluateBootstrap(MSA, invariants, numSamples, seed, model):
+def evaluateBootstrap(MSA, invariants, numSamples, seed, model, first, second):
 	#print("Sampling " + str(x+1) + " of " + str(numberOfBootstraps))
 	invariant_values = dict()
 	permutations = [(0,1,2,3),(0,2,1,3),(0,1,3,2),(1,2,0,3),(1,0,2,3),(1,0,3,2),(2,1,0,3),(2,0,1,3),(2,0,3,1),(3,1,0,2),(3,0,1,2),(3,0,2,1)]
@@ -100,6 +100,9 @@ def evaluateBootstrap(MSA, invariants, numSamples, seed, model):
 	for poly in invariants:
 		invariant_values[poly.getPolyString()] = dict()
 
+	#pertubation parameter likely to be changed in the future
+	pertubationParameter = 0.1
+	
 	# Create frequencies array from MSA
 	originalFrequencies = np.zeros(shape=(4,4,4,4), dtype=np.longdouble)
 	count = 0
@@ -108,10 +111,20 @@ def evaluateBootstrap(MSA, invariants, numSamples, seed, model):
 		col = []
 		for j in range(4):
 			col.append(str(MSA[j,i]))
-		if "-" not in col:
+		
+		
+
+		if "-" not in col: 
+			if col[first] == col[second]:
+				pert = random.uniform(0,1) 
+				if pert < pertubationParameter:
+					possible = ["A", "G", "T", "C"] 
+					possible.remove(col[second])
+					col[first] = random.choice(possible)
+   
 			originalFrequencies[Nucl[col[0]], Nucl[col[1]], Nucl[col[2]], Nucl[col[3]]] += 1
 			count += 1
-
+ 
 	for i in range(4):
 		for j in range(4):
 			for k in range(4):
@@ -390,7 +403,7 @@ if __name__ == '__main__':
 	model = "JC"
 
 	try:
-		opts, args = getopt.getopt(sys.argv[1:],"ha:i:m:t:")
+		opts, args = getopt.getopt(sys.argv[1:],"ha:i:m:t:f:s:")
 	except getopt.GetoptError:
 		print("Option not recognised.")
 		print("python evaluate_bootstrap.py -a <MSA file> -i <invariants file> -m <model> -t <threads>")
@@ -401,8 +414,11 @@ if __name__ == '__main__':
 			print("python evaluate_bootstrap.py -a <MSA file> -i <invariants file> -m <model> -t <threads>")
 			print("-a <MSA file>\t\t Multiple sequence alignment file.")
 			print("-i <invariants file>\t\t File containing list of polynomial invariants to use in Fourier coordinates.")
-			print("-m <model>\t\t Either JC or K2P.")
-			print("-t <threads>\t\t Number of threads to use.")
+			print("-m <model>\t\t Either JC or K2P.") 
+			print("-t <threads>\t\t Number of threads to use.") 
+			print("-f <First>\t\t First choice in pertubation pair")
+			print("-s <Second>\t\t Second choice in pertubation pair")
+			print("Edge direction from -s to -f")
 			sys.exit()
 		elif opt in ("-a"):
 			MSAFilename = arg
@@ -418,9 +434,17 @@ if __name__ == '__main__':
 				sys.exit(2)
 		elif opt in ("-t"):
 			numProcesses = int(arg)
-
+		elif opt in ("-f"):
+			first = int(arg)
+		elif opt in ("-s"):
+			second = int(arg)
+    
 	if len(MSAFilename) == 0:
 		print("Error: You must provide an MSA file with -a.")
+		sys.exit(2)
+	
+	if (first not in {0,1,2,3}) or (second not in {0,1,2,3}):
+		print(f"Error: Leaves are labelled 0, 1, 2, 3; ({first}, {second}) is not a valid leaf pair")
 		sys.exit(2)
 
 	try:
@@ -472,7 +496,7 @@ if __name__ == '__main__':
 	results = dict()
 	pool = Pool(processes=numProcesses)
 	for x in range(numberOfBootstraps):
-		results[x] = pool.apply_async(evaluateBootstrap, args=(originalMSA, networkPolys, numSamples, x, model))
+		results[x] = pool.apply_async(evaluateBootstrap, args=(originalMSA, networkPolys, numSamples, x, model, first, second))
 
 	pool.close()
 	pool.join()
@@ -507,19 +531,3 @@ if __name__ == '__main__':
 	print("evaluate_bootstrap.py time: " + str(end - start))
 
 
-#proportion of total variance???
-
-#jumps in score
-
-#trees proportion of total score??? prop of score - jump, prop of var - predicted behaviour
-
-#within group variance
-
-#check for groups
-
-#scoring system for each of hte above e.g >10 gets 3cycle?
-
-
-#for plots could colour differently by group then put in actual sorted order? then perhaps the density of each colour means something??
-#probably would only work with an extermly large bootstrap number or someeway to reduce the variance jumps
- 
