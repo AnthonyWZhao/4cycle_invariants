@@ -528,13 +528,13 @@ if __name__ == '__main__':
 	#my_bkps = algo.predict(2)
 	rpt.show.display(signal, my_bkps, figsize=(10,6))
 	print(my_bkps)
-	with open(f"{outputDirectory}/breakpoints_{first}_{second}.txt", "w") as f:
-		for bkp in my_bkps:		
-			f.write(str(bkp) + "\n")
-	f.close()
-      
-     
-	plt.savefig(f"{outputDirectory}/pertubation_plot_{first}_{second}", dpi=500)
+	with open(f"{outputDirectory}/breakpoints/breakpoints_{first}_{second}.txt", "w") as f:
+		f.write(",".join([l[1] for l in sorted_means]) + "\n")
+		f.write(",".join([str(num) for num in my_bkps])) 
+	f.close() 
+	
+	plt.title(f"Pertubation {first}_{second}")
+	plt.savefig(f"{outputDirectory}/plots/pertubation_plot_{first}_{second}", dpi=500)
 	end = time.time()
 	print("evaluate_bootstrap.py time: " + str(end - start))
 
