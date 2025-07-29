@@ -384,13 +384,13 @@ if __name__ == '__main__':
 	multiplierForTrees1 = 3
 	multiplierForTrees2 = 2
 
-	numberOfBootstraps = 20
+	numberOfBootstraps = 100
 	doPlots = False
 	numProcesses = 4
 	model = "JC"
 
 	try:
-		opts, args = getopt.getopt(sys.argv[1:],"ha:i:m:t:")
+		opts, args = getopt.getopt(sys.argv[1:],"ha:i:m:t:o:")
 	except getopt.GetoptError:
 		print("Option not recognised.")
 		print("python evaluate_bootstrap.py -a <MSA file> -i <invariants file> -m <model> -t <threads>")
@@ -403,6 +403,7 @@ if __name__ == '__main__':
 			print("-i <invariants file>\t\t File containing list of polynomial invariants to use in Fourier coordinates.")
 			print("-m <model>\t\t Either JC or K2P.")
 			print("-t <threads>\t\t Number of threads to use.")
+			print("-o <Output Directory>\t\t Directory for storing final results")
 			sys.exit()
 		elif opt in ("-a"):
 			MSAFilename = arg
@@ -418,6 +419,8 @@ if __name__ == '__main__':
 				sys.exit(2)
 		elif opt in ("-t"):
 			numProcesses = int(arg)
+		elif opt in ("-o"):
+			outputDirectory = arg
 
 	if len(MSAFilename) == 0:
 		print("Error: You must provide an MSA file with -a.")
@@ -500,9 +503,14 @@ if __name__ == '__main__':
 	my_bkps = algo.predict(pen=np.log( len(signal)))
 	#my_bkps = algo.predict(2)
 	rpt.show.display(signal, my_bkps, figsize=(10,6))
-	print(my_bkps)
-	plt.show()
+	print(my_bkps) 
+	with open(f"{outputDirectory}/breakpoints/breakpoints_base.txt", "w") as f:
+		f.write(",".join([l[1] for l in sorted_means]) + "\n")
+		f.write(",".join([str(num) for num in my_bkps])) 
+	f.close() 
 	
+	plt.title(f"Pertubation base")
+	plt.savefig(f"{outputDirectory}/plots/pertubation_plot_base", dpi=500)
 	end = time.time()
 	print("evaluate_bootstrap.py time: " + str(end - start))
 
